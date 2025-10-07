@@ -205,6 +205,7 @@ EOS
 
 # Build OpenResty. Output is in /usr/local.
 FROM build-base AS build-openresty
+COPY config/nginx.conf /usr/local/nginx/conf/nginx.conf
 ARG OPENRESTY_VERSION
 ARG OPENRESTY_BUILD_DEPS="libssl-dev libpcre3-dev zlib1g-dev"
 ARG OPENRESTY_BUILD_OPTIONS="\
@@ -367,6 +368,9 @@ RUN <<EOS
   bin/good_job --help > /dev/null
   bin/rails runner -e production 'puts "#{Danbooru.config.app_name}/#{Rails.application.config.x.git_hash}"'
 EOS
+
+COPY config/danbooru_local_config.rb /danbooru/config/danbooru_local_config.rb
+COPY .env.local /danbooru/.env.local
 
 ARG DOCKER_IMAGE_REVISION=""
 ARG DOCKER_IMAGE_BUILD_DATE=""
